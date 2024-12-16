@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +46,19 @@ public class AuthController {
     // 일반 회원가입
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> signUp(@Validated(ValidationGroups.Create.class) @ModelAttribute UserDTO userDTO,
+                                                      BindingResult bindingResult,
                                                       @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        // 검증 오류가 있으면 에러 메시지를 반환
+        if (bindingResult.hasErrors()) {
+            // 필드 오류를 처리
+            String errorMessages = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(error -> error.getField() + " : " + error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+
+            Map<String, String> errorResponse = Map.of("message", "회원가입 실패: " + errorMessages);
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
 
         String resultMessage = userService.register(userDTO, file);
         Map<String, String> response = Map.of("message", resultMessage);

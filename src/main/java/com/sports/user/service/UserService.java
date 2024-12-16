@@ -40,6 +40,21 @@ public class UserService {
     // 일반 회원가입 서비스
     public String register(UserDTO userDTO, MultipartFile file) throws IOException {
 
+        // 1. 아이디 중복 체크
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            return "중복된 아이디가 존재합니다.";
+        }
+
+        // 2. 이메일 중복 체크
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            return "중복된 이메일이 존재합니다.";
+        }
+
+        // 3. 전화번호 중복 체크 (필요한 경우)
+        if (userRepository.existsByPhone(userDTO.getPhone())) {
+            return "중복된 전화번호가 존재합니다.";
+        }
+
         String phone = userDTO.getPhone().replaceAll("[^0-9]", "");
         userDTO.setPhone(phone);
 

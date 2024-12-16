@@ -54,7 +54,7 @@ public class S3Service {
 
         // fileName이 null일 경우 기본 파일 경로 설정
         if (fileName == null || fileName.isEmpty()) {
-            filePath = basePath + "222.jfif"; // 기본으로 띄울 이미지 (나중에 기본이미지 정해서 변경)
+            filePath = basePath + "logoblackbg.png"; // 기본으로 띄울 이미지 (나중에 기본이미지 정해서 변경)
         } else {
             filePath = basePath + fileName;
 
@@ -73,7 +73,7 @@ public class S3Service {
     public String saveFiles(List<MultipartFile> files) throws IOException {
         List<String> fileUrls = new ArrayList<>();
         String basePath = "test/";
-        String defaultImagePath = basePath + "222.jfif"; // 기본 이미지 경로
+        String defaultImagePath = basePath + "logoblackbg.png"; // 기본 이미지 경로
 
         // 파일 리스트가 비어 있거나 null인 경우 기본 이미지 추가
         if (files == null || files.isEmpty()) {
